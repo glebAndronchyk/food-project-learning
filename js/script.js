@@ -42,7 +42,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //Timer
     const deadLine = "2022-12-30";
-    
+
     function getTimeRemaining(endTime) {
         const t = Date.parse(endTime) - Date.parse(new Date());
         const days = Math.floor(t / (1000 * 60 * 60 * 24));
@@ -85,4 +85,47 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     setClock('.timer', deadLine);
+
+
+    //Modal
+    const modalTriggers = document.querySelectorAll("[data-modal]");
+    const modal = document.querySelector('.modal');
+    const modalCloseBtn = document.querySelector('[data-close]');
+
+    function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimerID);
+    }
+    
+    function closeModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show')
+        document.body.style.overflow = '';
+    }
+
+    modal.addEventListener('click', (event) => {
+        if (event.target == modal) {
+            closeModal();
+        }
+    });
+
+    modalTriggers.forEach((btn) => {
+        btn.addEventListener('click', openModal);
+    });
+
+    modalCloseBtn.addEventListener('click', closeModal);
+
+    const modalTimerID = setTimeout(openModal, 5000);
+
+    function showModalByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {//-> -1 в старых браузерах может быть баг
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
+
 });
