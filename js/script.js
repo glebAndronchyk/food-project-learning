@@ -117,7 +117,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     modalCloseBtn.addEventListener('click', closeModal);
 
-    // const modalTimerID = setTimeout(openModal, 5000);
+    const modalTimerID = setTimeout(openModal, 100000000000);
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {//-> -1 в старых браузерах может быть баг
@@ -130,7 +130,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //Using Classes for cards
     class MenuCard {
-        constructor(src, alt, title, desc, price) {
+        constructor(src, alt, title, desc, price, parentSelector) {
             this.src = src;
             this.alt = alt;
             this.title = title;
@@ -138,6 +138,7 @@ window.addEventListener('DOMContentLoaded', () => {
             this.price = price;
             this.USD = 41;
             this.UAH = this.changeToUAH();
+            this.parent = document.querySelector(parentSelector);
         }
 
         render() {
@@ -153,7 +154,8 @@ window.addEventListener('DOMContentLoaded', () => {
                         <div class="menu__item-total"><span>${this.UAH}</span> грн/день</div>
                     </div>
             `;
-            return element;
+            const parent = this.parent;
+            parent.append(element);
         }
 
         changeToUAH() {
@@ -181,12 +183,8 @@ window.addEventListener('DOMContentLoaded', () => {
         price: 8
     }];
 
-    const menuField = document.querySelector('.menu__field');
-    const menuFieldContainer = menuField.querySelector('.container');
 
     dataForMenuCards.forEach(content => {
-        let card = new MenuCard(content.src, content.alt, content.title, content.desc, content.price)
-        // console.log(new MenuCard(content.src, content.alt, content.title, content.desc, content.price));
-        menuFieldContainer.append(card.render());
+        new MenuCard(content.src, content.alt, content.title, content.desc, content.price, '.menu .container').render();
     });
 });
