@@ -288,42 +288,54 @@ window.addEventListener('DOMContentLoaded', () => {
     const current = document.querySelector('#current');
     const prev = document.querySelector('.offer__slider-prev');
     const next = document.querySelector('.offer__slider-next');
+    const slidesWrapper = document.querySelector('.offer__slider-wrapper');
+    const slidesField = document.querySelector('.offer__slider-inner');
+    const width = window.getComputedStyle(slidesWrapper).width;
 
     let slideIndex = 1;
+    let offset = 0;
+
+    current.textContent = countSymbols(slideIndex);
     total.textContent = countSymbols(slides.length);
-    showSlide(slideIndex);
+
+    slidesField.style.width = 100 * slides.length + '%';
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = '.5s all';
+
+    slidesWrapper.style.overflow = 'hidden';
+
+    slides.forEach(slide => {
+       slide.style.width = width;
+    });
+
+    next.addEventListener('click', () => {
+        if (offset === +width.slice(0, width.length - 2) * (slides.length - 1)) { //'500px' -> 500
+            offset = 0 ;
+        } else {
+            offset += +width.slice(0, width.length - 2);
+        }
+        slidesField.style.transform = `translateX(-${offset}px)`;
+        slideIndex === slides.length ? slideIndex = 1 : slideIndex++;
+
+        current.textContent = countSymbols(slideIndex);
+    });
+
+    prev.addEventListener('click', () => {
+        if (offset === 0) {
+            offset = +width.slice(0, width.length - 2) * (slides.length - 1);
+        } else {
+            offset -= +width.slice(0, width.length - 2);
+        }
+        slidesField.style.transform = `translateX(-${offset}px)`;
+        slideIndex === 1 ? slideIndex = slides.length : slideIndex--;
+
+        current.textContent = countSymbols(slideIndex);
+    });
 
     function countSymbols(number) {
         return number < 10 ? `0${number}` : `${number}`;
     }
-    function showSlide(index) {
-        console.log(index);
-        if (index > slides.length) {
-            slideIndex = 1;
-        }
 
-        if (index < 1) {
-            slideIndex = slides.length;
-        }
-        slides.forEach(slide => {
-            slide.style.display = 'none';
-        });
-        current.textContent = countSymbols(slideIndex);
-        slides[slideIndex - 1].style.display = 'block';
-    }
-
-    function moveBySlides(n) {
-        showSlide(slideIndex += n);
-    }
-
-
-    prev.addEventListener('click', () => {
-        moveBySlides(-1);
-    });
-
-    next.addEventListener('click', () => {
-        moveBySlides(1);
-    });
 
 
 
